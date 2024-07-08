@@ -5,14 +5,14 @@ import (
 	"data-collector/internal/model"
 	"net/http"
 
-	confluentKafka "github.com/confluentinc/confluent-kafka-go/kafka"
+	// confluentKafka "github.com/confluentinc/confluent-kafka-go/kafka"
 	"github.com/gin-gonic/gin"
 )
 
 // Pending: Producer and topic needs to be initialized globally or passed via context
 // Here, we're using a global variable for simplicity
-var producer *confluentKafka.Producer
-var kafkaTopic string
+// var producer *confluentKafka.Producer
+// var kafkaTopic string
 
 // Temp removal of kafka
 // func init() {
