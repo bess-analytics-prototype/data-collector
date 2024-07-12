@@ -5,6 +5,7 @@ go 1.21.5
 require (
 	github.com/confluentinc/confluent-kafka-go v1.9.2
 	github.com/gin-gonic/gin v1.10.0
+	github.com/gorilla/mux v1.8.1
 )
 
 require (
