@@ -1,6 +1,8 @@
 package app
 
 import (
+	"data-collector/domain"
+	"data-collector/service"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -9,6 +11,9 @@ import (
 func Start() {
 	router := mux.NewRouter()
 
-	router.HandleFunc("/basicStartupTestData", getBasicStartupTestData).Methods(http.MethodGet)
+	//wiring
+	bh := BessHandler{service: service.NewDefaultBessService(domain.NewBessRepoStub())}
+
+	router.HandleFunc("/bessTestData", bh.getBessTestData).Methods(http.MethodGet)
 	http.ListenAndServe("localhost:8080", router)
 }
