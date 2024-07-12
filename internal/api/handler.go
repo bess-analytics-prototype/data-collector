@@ -2,7 +2,7 @@ package api
 
 import (
 	//"data-collector/internal/kafka"
-	"data-collector/internal/model"
+	"data-collector/domain"
 	"net/http"
 
 	// confluentKafka "github.com/confluentinc/confluent-kafka-go/kafka"
@@ -28,7 +28,7 @@ import (
 
 // PostData handles incoming POST requests and sends data to Kafka
 func PostData(c *gin.Context) {
-	var data model.BESSData
+	var data domain.Bess
 	if err := c.BindJSON(&data); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

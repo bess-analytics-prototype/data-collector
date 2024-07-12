@@ -3,7 +3,7 @@
 package kafka
 
 import (
-	"data-collector/internal/model"
+	"data-collector/domain"
 	"encoding/json"
 	"fmt"
 
@@ -27,7 +27,7 @@ func NewProducer(config *ProducerConfig) (*kafka.Producer, error) {
 }
 
 // SendToKafka sends BESS data to the specified Kafka topic
-func SendToKafka(data model.BESSData, producer *kafka.Producer, topic string) error {
+func SendToKafka(data domain.Bess, producer *kafka.Producer, topic string) error {
 	// Marshal data into bytes. Assume data is JSON-encoded
 	dataBytes, err := json.Marshal(data)
 	if err != nil {
