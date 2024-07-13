@@ -26,8 +26,9 @@ func (bh *BessHandler) postBessData(w http.ResponseWriter, r *http.Request) {
 	} else {
 		err := bh.service.PostAllBessData(bess)
 		if err != nil {
-			panic(err) //Refine error handling
+			json.NewEncoder(w).Encode(err.Error())
+		} else {
+			json.NewEncoder(w).Encode("Data saved successfully")
 		}
-		json.NewEncoder(w).Encode("Data saved successfully")
 	}
 }
