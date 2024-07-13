@@ -16,5 +16,5 @@ func Start() {
 
 	router.GET("/bessTestData", bh.getBessTestData)
 	router.POST("/bessPostTestData", bh.postBessData)
-	http.ListenAndServe("localhost:8080", router)
+	http.ListenAndServe(":8080", router)
 }
