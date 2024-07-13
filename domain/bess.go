@@ -15,4 +15,5 @@ type Data struct {
 
 type BessRepo interface {
 	GetData() (Bess, error)
+	PostData(Bess) error
 }

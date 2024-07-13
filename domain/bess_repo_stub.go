@@ -9,6 +9,11 @@ func (s BessRepoStub) GetData() (Bess, error) {
 	return s.bess, nil
 }
 
+func (s BessRepoStub) PostData(bess Bess) error {
+	// Do nothing until db is built and configured
+	return nil
+}
+
 func NewBessRepoStub() BessRepoStub {
 	bess := Bess{
 		Id:      "1234",
