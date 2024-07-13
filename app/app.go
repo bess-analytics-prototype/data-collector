@@ -5,16 +5,16 @@ import (
 	"data-collector/service"
 	"net/http"
 
-	"github.com/gorilla/mux"
+	"github.com/gin-gonic/gin"
 )
 
 func Start() {
-	router := mux.NewRouter()
+	router := gin.Default()
 
 	//wiring
 	bh := BessHandler{service: service.NewDefaultBessService(domain.NewBessRepoStub())}
 
-	router.HandleFunc("/bessTestData", bh.getBessTestData).Methods(http.MethodGet)
-	router.HandleFunc("/bessPostTestData", bh.postBessData).Methods(http.MethodPost)
+	router.GET("/bessTestData", bh.getBessTestData)
+	router.POST("/bessPostTestData", bh.postBessData)
 	http.ListenAndServe("localhost:8080", router)
 }
