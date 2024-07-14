@@ -14,7 +14,7 @@ func Start() {
 	//wiring
 	bh := BessHandler{service: service.NewDefaultBessService(domain.NewBessRepoStub())}
 
-	router.GET("/bessTestData", bh.getBessTestData)
-	router.POST("/bessPostTestData", bh.postBessData)
+	router.GET("/bessTestData", bh.GetBessData)
+	router.POST("/bessPostTestData", bh.PostBessData)
 	http.ListenAndServe(":8080", router)
 }

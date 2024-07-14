@@ -13,7 +13,7 @@ type BessHandler struct {
 	service service.BessService
 }
 
-func (bh *BessHandler) getBessTestData(c *gin.Context) {
+func (bh *BessHandler) GetBessData(c *gin.Context) {
 	bess, err := bh.service.GetAllBessData()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Unable to fetch BESS data"})
@@ -22,7 +22,7 @@ func (bh *BessHandler) getBessTestData(c *gin.Context) {
 	c.JSON(http.StatusOK, bess)
 }
 
-func (bh *BessHandler) postBessData(c *gin.Context) {
+func (bh *BessHandler) PostBessData(c *gin.Context) {
 	var bess domain.Bess
 	if err := c.ShouldBindJSON(&bess); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
