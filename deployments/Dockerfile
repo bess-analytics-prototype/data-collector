@@ -9,6 +9,7 @@ RUN go mod download -x
 
 COPY . .
 
-RUN go build -o main ./cmd/server/main.go
+# Ensure the binary is built for Linux amd64
+RUN GOOS=linux GOARCH=amd64 go build -o main ./cmd/server/main.go
 
 CMD ["./main"]

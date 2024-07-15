@@ -10,7 +10,7 @@ func (s BessRepoStub) GetData() (Bess, error) {
 }
 
 func (s BessRepoStub) PostData(bess Bess) error {
-	// Do nothing until db is built and configured
+	// Do nothing for stubb implementation
 	return nil
 }
 

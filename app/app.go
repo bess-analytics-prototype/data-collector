@@ -12,7 +12,13 @@ func Start() {
 	router := gin.Default()
 
 	//wiring
-	bh := BessHandler{service: service.NewDefaultBessService(domain.NewBessRepoStub())}
+	var bh BessHandler
+	repo, err := domain.NewBessRepoDb("someTable")
+	if err != nil {
+		bh = BessHandler{service: service.NewDefaultBessService(domain.NewBessRepoStub())}
+	} else {
+		bh = BessHandler{service: service.NewDefaultBessService(repo)}
+	}
 
 	router.GET("/bessTestData", bh.GetBessData)
 	router.POST("/bessPostTestData", bh.PostBessData)
