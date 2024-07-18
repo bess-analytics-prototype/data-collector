@@ -9,6 +9,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
+	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 )
 
 type PerformanceDataRepoDb struct {
@@ -24,40 +25,49 @@ func (d PerformanceDataRepoDb) GetData() ([]PerformanceData, error) {
 
 	result, err := d.dbClient.Scan(context.TODO(), input)
 	if err != nil {
-		return []PerformanceData{}, fmt.Errorf("failed to scan items: %v", err)
+		return nil, fmt.Errorf("failed to scan items: %v", err)
 	}
 
 	if len(result.Items) == 0 {
-		return []PerformanceData{}, errors.New("no items found")
+		return nil, errors.New("no items found")
 	}
 
 	var performanceData []PerformanceData
-	err = attributevalue.UnmarshalMap(result.Items[0], &performanceData)
+	err = attributevalue.UnmarshalListOfMaps(result.Items, &performanceData)
 	if err != nil {
-		return []PerformanceData{}, fmt.Errorf("failed to unmarshal item: %v", err)
+		return nil, fmt.Errorf("failed to unmarshal items: %v", err)
 	}
 
 	return performanceData, nil
 }
 
 func (d PerformanceDataRepoDb) PostData(performanceData []PerformanceData) error {
-	// Marshal the Bess struct into a map of DynamoDB attribute values
-	item, err := attributevalue.MarshalMap(performanceData)
-	if err != nil {
-		return fmt.Errorf("failed to marshal item: %v", err)
+	writeRequests := []types.WriteRequest{}
+
+	for _, data := range performanceData {
+		item, err := attributevalue.MarshalMap(data)
+		if err != nil {
+			return fmt.Errorf("failed to marshal item: %v", err)
+		}
+
+		writeRequests = append(writeRequests, types.WriteRequest{
+			PutRequest: &types.PutRequest{
+				Item: item,
+			},
+		})
 	}
 
-	// Define the input for the DynamoDB put item operation
-	input := &dynamodb.PutItemInput{
-		TableName: aws.String(d.tableName),
-		Item:      item,
+	input := &dynamodb.BatchWriteItemInput{
+		RequestItems: map[string][]types.WriteRequest{
+			d.tableName: writeRequests,
+		},
 	}
 
-	// Perform the put item operation
-	_, err = d.dbClient.PutItem(context.TODO(), input)
+	_, err := d.dbClient.BatchWriteItem(context.TODO(), input)
 	if err != nil {
-		return fmt.Errorf("failed to put item: %v", err)
+		return fmt.Errorf("failed to batch write items: %v", err)
 	}
+
 	return nil
 }
 

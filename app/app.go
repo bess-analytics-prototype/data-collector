@@ -13,7 +13,7 @@ func Start() {
 
 	// wiring
 	var bh BessHandler
-	repo, err := domain.NewPerformanceDataRepoDb("AnalyticsPrototype")
+	repo, err := domain.NewPerformanceDataRepoDb("PerformanceData")
 	if err != nil {
 		bh = BessHandler{service: service.NewDefaultPerformanceDataService(domain.NewBessRepoStub())}
 	} else {
