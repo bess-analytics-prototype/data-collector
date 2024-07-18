@@ -10,11 +10,11 @@ import (
 )
 
 type BessHandler struct {
-	service service.BessService
+	service service.PerformanceService
 }
 
-func (bh *BessHandler) GetBessData(c *gin.Context) {
-	bess, err := bh.service.GetAllBessData()
+func (bh *BessHandler) GetPerformanceData(c *gin.Context) {
+	bess, err := bh.service.GetAllPerformanceData()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Unable to fetch BESS data"})
 		return
@@ -22,13 +22,13 @@ func (bh *BessHandler) GetBessData(c *gin.Context) {
 	c.JSON(http.StatusOK, bess)
 }
 
-func (bh *BessHandler) PostBessData(c *gin.Context) {
-	var bess domain.Bess
-	if err := c.ShouldBindJSON(&bess); err != nil {
+func (bh *BessHandler) PostPerformanceData(c *gin.Context) {
+	var performanceData []domain.PerformanceData
+	if err := c.ShouldBindJSON(&performanceData); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	err := bh.service.PostAllBessData(bess)
+	err := bh.service.PostAllPerformanceData(performanceData)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

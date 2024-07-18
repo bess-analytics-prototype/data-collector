@@ -11,12 +11,12 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 )
 
-type BessRepoDb struct {
+type PerformanceDataRepoDb struct {
 	dbClient  *dynamodb.Client
 	tableName string
 }
 
-func (d BessRepoDb) GetData() (Bess, error) {
+func (d PerformanceDataRepoDb) GetData() ([]PerformanceData, error) {
 	input := &dynamodb.ScanInput{
 		TableName: aws.String(d.tableName),
 		Limit:     aws.Int32(1),
@@ -24,25 +24,25 @@ func (d BessRepoDb) GetData() (Bess, error) {
 
 	result, err := d.dbClient.Scan(context.TODO(), input)
 	if err != nil {
-		return Bess{}, fmt.Errorf("failed to scan items: %v", err)
+		return []PerformanceData{}, fmt.Errorf("failed to scan items: %v", err)
 	}
 
 	if len(result.Items) == 0 {
-		return Bess{}, errors.New("no items found")
+		return []PerformanceData{}, errors.New("no items found")
 	}
 
-	var bess Bess
-	err = attributevalue.UnmarshalMap(result.Items[0], &bess)
+	var performanceData []PerformanceData
+	err = attributevalue.UnmarshalMap(result.Items[0], &performanceData)
 	if err != nil {
-		return Bess{}, fmt.Errorf("failed to unmarshal item: %v", err)
+		return []PerformanceData{}, fmt.Errorf("failed to unmarshal item: %v", err)
 	}
 
-	return bess, nil
+	return performanceData, nil
 }
 
-func (d BessRepoDb) PostData(bess Bess) error {
+func (d PerformanceDataRepoDb) PostData(performanceData []PerformanceData) error {
 	// Marshal the Bess struct into a map of DynamoDB attribute values
-	item, err := attributevalue.MarshalMap(bess)
+	item, err := attributevalue.MarshalMap(performanceData)
 	if err != nil {
 		return fmt.Errorf("failed to marshal item: %v", err)
 	}
@@ -61,13 +61,13 @@ func (d BessRepoDb) PostData(bess Bess) error {
 	return nil
 }
 
-func NewBessRepoDb(tableName string) (*BessRepoDb, error) {
-	cfg, err := config.LoadDefaultConfig(context.TODO())
+func NewPerformanceDataRepoDb(tableName string) (*PerformanceDataRepoDb, error) {
+	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion("us-east-1"))
 	if err != nil {
 		return nil, fmt.Errorf("unable to load SDK config, %v", err)
 	}
 
-	return &BessRepoDb{
+	return &PerformanceDataRepoDb{
 		dbClient:  dynamodb.NewFromConfig(cfg),
 		tableName: tableName,
 	}, nil

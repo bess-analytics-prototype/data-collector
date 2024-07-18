@@ -11,16 +11,16 @@ import (
 func Start() {
 	router := gin.Default()
 
-	//wiring
+	// wiring
 	var bh BessHandler
-	repo, err := domain.NewBessRepoDb("someTable")
+	repo, err := domain.NewPerformanceDataRepoDb("AnalyticsPrototype")
 	if err != nil {
-		bh = BessHandler{service: service.NewDefaultBessService(domain.NewBessRepoStub())}
+		bh = BessHandler{service: service.NewDefaultPerformanceDataService(domain.NewBessRepoStub())}
 	} else {
-		bh = BessHandler{service: service.NewDefaultBessService(repo)}
+		bh = BessHandler{service: service.NewDefaultPerformanceDataService(repo)}
 	}
 
-	router.GET("/bessTestData", bh.GetBessData)
-	router.POST("/bessPostTestData", bh.PostBessData)
+	router.GET("/getPerformanceTestData", bh.GetPerformanceData)
+	router.POST("/postPerformanceTestData", bh.PostPerformanceData)
 	http.ListenAndServe(":8080", router)
 }
