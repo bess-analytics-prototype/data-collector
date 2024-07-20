@@ -13,15 +13,6 @@ type BessHandler struct {
 	service service.PerformanceService
 }
 
-func (bh *BessHandler) GetPerformanceData(c *gin.Context) {
-	bess, err := bh.service.GetAllPerformanceData()
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Unable to fetch BESS data"})
-		return
-	}
-	c.JSON(http.StatusOK, bess)
-}
-
 func (bh *BessHandler) PostPerformanceData(c *gin.Context) {
 	var performanceData []domain.PerformanceData
 	if err := c.ShouldBindJSON(&performanceData); err != nil {

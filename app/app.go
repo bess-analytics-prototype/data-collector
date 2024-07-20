@@ -3,6 +3,7 @@ package app
 import (
 	"data-collector/domain"
 	"data-collector/service"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -15,12 +16,11 @@ func Start() {
 	var bh BessHandler
 	repo, err := domain.NewPerformanceDataRepoDb("PerformanceData")
 	if err != nil {
-		bh = BessHandler{service: service.NewDefaultPerformanceDataService(domain.NewBessRepoStub())}
-	} else {
-		bh = BessHandler{service: service.NewDefaultPerformanceDataService(repo)}
+		log.Println("Unable to establish new performance data repo db")
 	}
 
-	router.GET("/getPerformanceTestData", bh.GetPerformanceData)
+	bh = BessHandler{service: service.NewDefaultPerformanceDataService(repo)}
+
 	router.POST("/postPerformanceTestData", bh.PostPerformanceData)
 	http.ListenAndServe(":8080", router)
 }

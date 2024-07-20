@@ -2,10 +2,8 @@ package domain
 
 import (
 	"context"
-	"errors"
 	"fmt"
 
-	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
@@ -15,30 +13,6 @@ import (
 type PerformanceDataRepoDb struct {
 	dbClient  *dynamodb.Client
 	tableName string
-}
-
-func (d PerformanceDataRepoDb) GetData() ([]PerformanceData, error) {
-	input := &dynamodb.ScanInput{
-		TableName: aws.String(d.tableName),
-		Limit:     aws.Int32(1),
-	}
-
-	result, err := d.dbClient.Scan(context.TODO(), input)
-	if err != nil {
-		return nil, fmt.Errorf("failed to scan items: %v", err)
-	}
-
-	if len(result.Items) == 0 {
-		return nil, errors.New("no items found")
-	}
-
-	var performanceData []PerformanceData
-	err = attributevalue.UnmarshalListOfMaps(result.Items, &performanceData)
-	if err != nil {
-		return nil, fmt.Errorf("failed to unmarshal items: %v", err)
-	}
-
-	return performanceData, nil
 }
 
 func (d PerformanceDataRepoDb) PostData(performanceData []PerformanceData) error {
